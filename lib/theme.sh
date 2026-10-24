@@ -64,6 +64,7 @@ theme_apply() {
   theme_kde_colors
 
   theme_panels
+  theme_launcher
 
   # THEME_WALLPAPER (ruta del sistema) o, si no existe, el wallpaper.* del tema
   wp=${THEME_WALLPAPER:-}
@@ -109,6 +110,29 @@ theme_kde_colors() {
     QT_QPA_PLATFORM=offscreen plasma-apply-colorscheme --accent-color "$THEME_KDE_ACCENT" >>"$KUBU_LOG" 2>&1 &&
     ok "KDE: $scheme con acento $THEME_KDE_ACCENT" ||
     warn "KDE: no se pudieron aplicar los colores (¿sesión gráfica abierta?)"
+}
+
+# Colores del lanzador (fuzzel, Alt+Espacio) del tema cargado o, si no, el actual.
+# Marco, prompt y coincidencias con el acento; fondo, texto y selección con
+# THEME_LAUNCHER_BG / _FG / _SELECTION (RRGGBBAA) o unos oscuros por defecto.
+# Solo si el módulo Escritorio instaló el lanzador.
+theme_launcher() {
+  local dir=$HOME/.config/fuzzel accent
+  [[ -f $dir/fuzzel.ini ]] || return 0
+  [[ -n ${THEME_NAME:-} ]] || source "$KUBU_ROOT/themes/$(theme_current)/theme.sh"
+  accent=${THEME_KDE_ACCENT#\#}
+  printf '%s\n' "[colors]" \
+    "background=${THEME_LAUNCHER_BG:-1a1b26f7}" \
+    "text=${THEME_LAUNCHER_FG:-c0caf5ff}" \
+    "prompt=${accent}ff" \
+    "placeholder=565f89ff" \
+    "input=e0e6ffff" \
+    "match=${accent}ff" \
+    "selection=${THEME_LAUNCHER_SELECTION:-${accent}55}" \
+    "selection-text=ffffffff" \
+    "selection-match=${accent}ff" \
+    "border=${accent}ff" >"$dir/kubu-colors.ini"
+  ok "Lanzador de apps"
 }
 
 # Ajustes de las barras de Plasma del tema (cargado o, si no, el actual):
