@@ -20,6 +20,12 @@ export GUM_CONFIRM_PROMPT_FOREGROUND=$KUBU_BLUE
 export GUM_CONFIRM_SELECTED_BACKGROUND=$KUBU_ORANGE
 export GUM_CONFIRM_SELECTED_FOREGROUND=0
 export GUM_SPIN_SPINNER_FOREGROUND=$KUBU_ORANGE
+# Paginador (Manual, vistas): búsqueda en azul y naranja en vez del rosa de gum
+export GUM_PAGER_MATCH_FOREGROUND=$KUBU_BLUE
+export GUM_PAGER_MATCH_HIGH_FOREGROUND=0
+export GUM_PAGER_MATCH_HIGH_BACKGROUND=$KUBU_ORANGE
+# Manual: tema de kubu para gum format (secciones azules, código naranja)
+export GUM_FORMAT_THEME="$KUBU_ROOT/configs/gum-format.json"
 
 KUBU_ASCII=' ____  __.     ___.
 |    |/ _|__ _\_ |__  __ __
@@ -94,13 +100,13 @@ ui_service() {
 
 # ui_section <título>: encabezado de un panel de configuración
 ui_section() {
-  printf '  \033[1;38;5;%sm▌ %s\033[0m\n' "$KUBU_ORANGE" "$1"
+  printf '  \033[1;38;5;%sm▌ %s\033[0m\n' "$KUBU_BLUE" "$1"
   [[ -n ${2:-} ]] && printf '  \033[2m  %s\033[0m\n' "$2"
   return 0
 }
 
 # ui_view <título> < texto: muestra una salida larga en el paginador
-ui_view() { { gum style --bold --foreground $KUBU_ORANGE "$1"; echo; cat; } | gum pager; }
+ui_view() { { gum style --bold --foreground $KUBU_BLUE "  ▌ $1"; echo; cat; } | gum pager; }
 
 # ui_pick <cabecera> <opción>...: elige una; falla si no hay opciones o se cancela
 ui_pick() {
