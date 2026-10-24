@@ -27,6 +27,7 @@ mod_install() {
 mod_configure() {
   _plasma_running || die "Plasma no está en marcha: ejecútalo desde tu sesión gráfica"
   _glow off
+  _wobbly off
   _install_plasmoids
   _bar_exists && _bar_remove
   _bar_create
@@ -40,6 +41,7 @@ mod_uninstall() {
     _clock_exists && _clock_remove
   fi
   _glow on
+  _wobbly on
   local p
   for p in "${PLASMOIDS[@]}"; do
     kpackagetool6 -t Plasma/Applet -r "$p" >/dev/null 2>&1 || true
@@ -118,6 +120,18 @@ _clock_create() {
 }
 
 # --- Brillo de la ventana activa (Oxygen: resplandor · Breeze: contorno) ----------
+
+# Ventanas gelatinosas (Wobbly Windows): Kubuntu las trae activadas; kubu las quita.
+# «on» borra el ajuste y vuelve al valor de Kubuntu.
+_wobbly() {  # _wobbly on|off
+  if [[ $1 == off ]]; then
+    kwriteconfig6 --file kwinrc --group Plugins --key wobblywindowsEnabled false
+    qdbus6 org.kde.KWin /Effects org.kde.kwin.Effects.unloadEffect wobblywindows >/dev/null 2>&1 || true
+  else
+    kwriteconfig6 --file kwinrc --group Plugins --key wobblywindowsEnabled --delete
+  fi
+  qdbus6 org.kde.KWin /KWin reconfigure >/dev/null 2>&1 || true
+}
 
 _glow_on() { [[ $(kreadconfig6 --file oxygenrc --group ActiveShadow --key Enabled --default true) == true ]]; }
 
