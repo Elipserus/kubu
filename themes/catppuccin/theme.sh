@@ -1,0 +1,6 @@
+THEME_NAME="Catppuccin"
+THEME_GHOSTTY="Catppuccin Macchiato"
+THEME_VSCODE_EXT="Catppuccin.catppuccin-vsc"
+THEME_VSCODE_NAME="Catppuccin Macchiato"
+THEME_KDE_SCHEME="BreezeDark"
+THEME_KDE_ACCENT="#c6a0f6"
