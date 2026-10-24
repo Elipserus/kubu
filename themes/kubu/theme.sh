@@ -1,0 +1,9 @@
+THEME_NAME="Kubu (naranja y azul)"
+THEME_GHOSTTY="kubu"
+THEME_VSCODE_EXT="enkia.tokyo-night"
+THEME_VSCODE_NAME="Tokyo Night"
+THEME_KDE_SCHEME="BreezeDark"
+THEME_KDE_ACCENT="#ff8700"
+THEME_WALLPAPER="/usr/share/wallpapers/MilkyWay/contents/images/5120x2880.png"
+THEME_KDE_ICON_SPACING=3
+THEME_KDE_PANEL_OPACITY="translucent"

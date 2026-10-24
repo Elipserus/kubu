@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3840" height="2160" viewBox="0 0 3840 2160">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="0.6" stop-color="#0d1f3a"/>
+      <stop offset="1" stop-color="#0a2a55"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.78" cy="0.72" r="0.45">
+      <stop offset="0" stop-color="#ff8700" stop-opacity="0.55"/>
+      <stop offset="0.5" stop-color="#ff8700" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#ff8700" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glow" cx="0.18" cy="0.2" r="0.5">
+      <stop offset="0" stop-color="#0087ff" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#0087ff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="3840" height="2160" fill="url(#bg)"/>
+  <rect width="3840" height="2160" fill="url(#glow)"/>
+  <rect width="3840" height="2160" fill="url(#sun)"/>
+  <g fill="none" stroke-width="6" stroke-linecap="round">
+    <path d="M0 1700 C 900 1450, 1900 1950, 3840 1500" stroke="#0087ff" stroke-opacity="0.35"/>
+    <path d="M0 1820 C 1100 1600, 2100 2050, 3840 1640" stroke="#ff8700" stroke-opacity="0.45"/>
+    <path d="M0 1940 C 1200 1760, 2300 2120, 3840 1780" stroke="#5fafff" stroke-opacity="0.2"/>
+  </g>
+</svg>

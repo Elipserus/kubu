@@ -1,0 +1,15 @@
+themes {
+    kubu {
+        fg 219 228 240
+        bg 11 18 32
+        black 26 36 54
+        red 255 95 95
+        green 255 135 0
+        yellow 255 175 95
+        blue 0 135 255
+        magenta 215 135 255
+        cyan 95 215 255
+        white 192 203 219
+        orange 255 135 0
+    }
+}

@@ -1,0 +1,23 @@
+# Tema kubu para Ghostty: azul noche con acentos naranja y azul
+background = #0b1220
+foreground = #dbe4f0
+cursor-color = #ff8700
+cursor-text = #0b1220
+selection-background = #16365f
+selection-foreground = #ffffff
+palette = 0=#1a2436
+palette = 1=#ff5f5f
+palette = 2=#87d787
+palette = 3=#ff8700
+palette = 4=#0087ff
+palette = 5=#d787ff
+palette = 6=#5fd7ff
+palette = 7=#c0cbdb
+palette = 8=#4a5a75
+palette = 9=#ff8787
+palette = 10=#afffaf
+palette = 11=#ffaf5f
+palette = 12=#5fafff
+palette = 13=#e5b0ff
+palette = 14=#87e7ff
+palette = 15=#ffffff
