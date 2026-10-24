@@ -1,0 +1,15 @@
+# Historial
+shopt -s histappend
+HISTCONTROL=ignoreboth
+HISTSIZE=32768
+HISTFILESIZE="${HISTSIZE}"
+
+# Autocompletado
+[[ -f /usr/share/bash-completion/bash_completion ]] && source /usr/share/bash-completion/bash_completion
+
+# PATH
+export PATH="./bin:$HOME/.local/bin:$KUBU_PATH/bin:$PATH"
+set +h
+
+export EDITOR="nvim"
+export SUDO_EDITOR="$EDITOR"
