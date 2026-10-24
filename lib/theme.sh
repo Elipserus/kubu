@@ -61,11 +61,7 @@ theme_apply() {
   # QGuiApplication: si no pueden conectar con la pantalla (SSH, zellij/tmux con un
   # WAYLAND_DISPLAY heredado...) abortan y Ubuntu muestra "error interno". Con la
   # plataforma offscreen nunca abren ventana y los cambios se aplican igual.
-  if has plasma-apply-colorscheme; then
-    QT_QPA_PLATFORM=offscreen plasma-apply-colorscheme --accent-color "$THEME_KDE_ACCENT" "$THEME_KDE_SCHEME" >>"$KUBU_LOG" 2>&1 &&
-      ok "KDE: $THEME_KDE_SCHEME con acento $THEME_KDE_ACCENT" ||
-      warn "KDE: no se pudieron aplicar los colores (¿sesión gráfica abierta?)"
-  fi
+  theme_kde_colors
 
   theme_panels
 
@@ -81,6 +77,26 @@ theme_apply() {
 
   echo "$id" >"$KUBU_STATE/theme"
   ok "Tema $THEME_NAME aplicado"
+}
+
+# Modo de KDE que elige el usuario en Escritorio: dark (por defecto) o light
+kde_mode() { cat "$KUBU_STATE/kde-mode" 2>/dev/null || echo dark; }
+
+# Esquema de colores de KDE del tema (cargado o, si no, el actual) en el modo
+# elegido, más su color de acento. THEME_KDE_SCHEME es el oscuro;
+# THEME_KDE_SCHEME_LIGHT el claro (BreezeLight si el tema no lo define).
+# Van en dos llamadas: con --accent-color y el esquema a la vez, Plasma 6.6 solo
+# aplica el acento.
+theme_kde_colors() {
+  local scheme
+  has plasma-apply-colorscheme || return 0
+  [[ -n ${THEME_NAME:-} ]] || source "$KUBU_ROOT/themes/$(theme_current)/theme.sh"
+  scheme=$THEME_KDE_SCHEME
+  [[ $(kde_mode) == light ]] && scheme=${THEME_KDE_SCHEME_LIGHT:-BreezeLight}
+  QT_QPA_PLATFORM=offscreen plasma-apply-colorscheme "$scheme" >>"$KUBU_LOG" 2>&1 &&
+    QT_QPA_PLATFORM=offscreen plasma-apply-colorscheme --accent-color "$THEME_KDE_ACCENT" >>"$KUBU_LOG" 2>&1 &&
+    ok "KDE: $scheme con acento $THEME_KDE_ACCENT" ||
+    warn "KDE: no se pudieron aplicar los colores (¿sesión gráfica abierta?)"
 }
 
 # Ajustes de las barras de Plasma del tema (cargado o, si no, el actual):
