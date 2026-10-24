@@ -8,6 +8,7 @@ PLASMOIDS=(org.kubu.ip org.kubu.spotify org.kubu.sysmon org.kubu.clock)
 APPLETSRC="$HOME/.config/plasma-org.kde.plasma.desktop-appletsrc"
 
 MOD_MENU=(
+  "desk_mode|Modo oscuro o claro"
   "desk_pins|Elegir las apps ancladas en la barra de tareas"
   "desk_bar|Añadir o quitar la barra superior"
   "desk_clock|Añadir o quitar la fecha del escritorio"
@@ -263,6 +264,18 @@ desk_clock() {
   fi
 }
 
+# Modo oscuro o claro de KDE: se guarda y se aplica con los colores del tema actual
+desk_mode() {
+  local choice mode
+  source "$KUBU_ROOT/lib/theme.sh"
+  choice=$(ui_pick "Modo de KDE (ahora: $([[ $(kde_mode) == light ]] && echo claro || echo oscuro))" \
+    "Oscuro" "Claro") || return 0
+  mode=dark
+  [[ $choice == Claro ]] && mode=light
+  echo "$mode" >"$KUBU_STATE/kde-mode"
+  theme_kde_colors
+}
+
 desk_glow() {
   if _glow_on; then _glow off; ok "Brillo de la ventana activa quitado"
   else _glow on; ok "Brillo de la ventana activa restaurado"
@@ -278,6 +291,7 @@ mod_status() {
   local deco n
   deco=$(kreadconfig6 --file kwinrc --group org.kde.kdecoration2 --key library --default org.kde.breeze)
   ui_status "Decoración" "${deco#org.kde.}"
+  ui_status "Modo" "$([[ $(cat "$KUBU_STATE/kde-mode" 2>/dev/null) == light ]] && echo claro || echo oscuro)"
   if _glow_on; then ui_status "Brillo ventana activa" "activado" off
   else ui_status "Brillo ventana activa" "quitado" ok
   fi
