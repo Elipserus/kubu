@@ -1,0 +1,6 @@
+THEME_NAME="Kanagawa"
+THEME_GHOSTTY="Kanagawa Wave"
+THEME_VSCODE_EXT="qufiwefefwoyn.kanagawa"
+THEME_VSCODE_NAME="Kanagawa"
+THEME_KDE_SCHEME="BreezeDark"
+THEME_KDE_ACCENT="#7e9cd8"
