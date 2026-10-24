@@ -1,0 +1,6 @@
+THEME_NAME="Tokyo Night"
+THEME_GHOSTTY="TokyoNight Night"
+THEME_VSCODE_EXT="enkia.tokyo-night"
+THEME_VSCODE_NAME="Tokyo Night"
+THEME_KDE_SCHEME="BreezeDark"
+THEME_KDE_ACCENT="#7aa2f7"
