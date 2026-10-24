@@ -1,0 +1,6 @@
+THEME_NAME="Rosé Pine"
+THEME_GHOSTTY="Rose Pine Dawn"
+THEME_VSCODE_EXT="mvllow.rose-pine"
+THEME_VSCODE_NAME="Rosé Pine Dawn"
+THEME_KDE_SCHEME="BreezeLight"
+THEME_KDE_ACCENT="#d7827e"
