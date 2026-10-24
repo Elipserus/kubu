@@ -1,0 +1,18 @@
+{
+  "KPlugin": {
+    "Id": "org.kubu.clock",
+    "Name": "kubu Fecha",
+    "Description": "Día de la semana, fecha y hora para el escritorio",
+    "Icon": "clock",
+    "Authors": [
+      {
+        "Name": "kubu"
+      }
+    ],
+    "License": "MIT",
+    "Version": "1.0",
+    "Category": "Date and Time"
+  },
+  "KPackageStructure": "Plasma/Applet",
+  "X-Plasma-API-Minimum-Version": "6.0"
+}
