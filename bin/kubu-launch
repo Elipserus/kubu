@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
-# Abre la app de un atajo de kubu: kubu-launch terminal|browser|editor
+# Abre la app de un atajo de kubu: kubu-launch terminal|browser|editor|launcher
 # Terminal y navegador son siempre los predeterminados del momento en KDE.
 case ${1:-} in
+  # Lanzador de apps (fuzzel); sin él, KRunner
+  launcher) command -v fuzzel >/dev/null && exec fuzzel
+            exec qdbus6 org.kde.krunner /App org.kde.krunner.App.display ;;
   terminal) app=$(kreadconfig6 --file kdeglobals --group General --key TerminalService \
               --default org.kde.konsole.desktop) ;;
   browser)  app=$(xdg-settings get default-web-browser) ;;
@@ -9,6 +12,6 @@ case ${1:-} in
               [[ -n $(find "$HOME/.local/share/applications" /var/lib/flatpak/exports/share/applications \
                    /usr/share/applications -maxdepth 1 -name "$app" 2>/dev/null) ]] && break
             done ;;
-  *)        echo "Uso: kubu-launch terminal|browser|editor" >&2; exit 1 ;;
+  *)        echo "Uso: kubu-launch terminal|browser|editor|launcher" >&2; exit 1 ;;
 esac
 exec kstart --application "${app%.desktop}"

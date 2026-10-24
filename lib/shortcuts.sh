@@ -20,7 +20,8 @@ SHORTCUTS_CHEATSHEET=(
   "Apps|Meta+C|VS Code (si está instalado)|k"
   "Apps|Meta+E|Archivos (Dolphin)|"
   "Apps|Meta|Menú de aplicaciones|"
-  "Apps|Alt+Espacio|Buscar y abrir apps (KRunner)|"
+  "Apps|Alt+Espacio|Lanzador de apps|k"
+  "Apps|Alt+F2|KRunner: ficheros · cálculos · comandos|"
   "Apps|Meta+Esc|Monitor del sistema|"
   "Apps|Meta+V|Historial del portapapeles|"
   "Apps|Meta+.|Emojis|"
@@ -170,6 +171,7 @@ Comment=Atajo de kubu
 Exec=$KUBU_ROOT/bin/kubu-launch $id
 Icon=$icon
 NoDisplay=true
+StartupNotify=false
 X-KDE-Shortcuts=$(IFS=,; key_portable "$*")
 EOF
   kbuildsycoca6 >/dev/null 2>&1 || true

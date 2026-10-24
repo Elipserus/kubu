@@ -61,6 +61,8 @@ mod_configure() {
   # Apps: lanzadores propios (ver lib/shortcuts.sh); abren las predeterminadas
   _launcher "Terminal" terminal "Terminal (kubu)" utilities-terminal Meta+Intro Ctrl+Alt+T
   _launcher "Navegador" browser "Navegador (kubu)" internet-web-browser Meta+B
+  # Alt+Espacio: lanzador de apps; KRunner se queda con Alt+F2
+  _launcher "Lanzador de apps" launcher "Lanzador de apps (kubu)" system-search Alt+Espacio
   if [[ -n $(_desktop_of com.microsoft.VSCode.desktop code.desktop) ]]; then
     _launcher "VS Code" editor "VS Code (kubu)" accessories-text-editor Meta+C
   fi
