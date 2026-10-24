@@ -1,0 +1,6 @@
+MOD_NAME="ChatGPT"
+MOD_CATEGORY="IA"
+MOD_DESC="Web app de ChatGPT"
+MOD_WEBAPP_ICON=chatgpt
+MOD_DEFAULT=1
+MOD_WEBAPP_URL=https://chatgpt.com
