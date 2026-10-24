@@ -29,8 +29,10 @@ todo de una vez. Después, abre el menú con `kubu`.
   parar contenedores y VMs, conectarte a tu red Tailscale, hacer de Bitwarden el
   gestor de contraseñas de Brave...).
 - **Escritorio** (en Aplicaciones › Sistema): barra superior con tu IP (clic: IP
-  pública), Spotify (canción y controles) y uso de CPU/RAM; elegir las apps
-  ancladas en la barra de tareas; quitar el brillo de la ventana activa.
+  pública), Spotify (canción y controles) y uso de CPU/RAM; fecha en el
+  escritorio; modo oscuro o claro; elegir las apps ancladas en la barra de
+  tareas; quitar el brillo de la ventana activa. Las ventanas gelatinosas de
+  Kubuntu vienen desactivadas.
 - **Actualizar**: kubu (git pull + migraciones), el sistema o apps de fuera de apt.
 
 También por comandos: `kubu list`, `kubu install brave vlc`, `kubu uninstall vlc`,
