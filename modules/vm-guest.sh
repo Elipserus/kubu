@@ -53,7 +53,13 @@ mod_configure() {
         return 0
       fi
       # Las VMware Tools actuales (Ubuntu 26.04) montan /mnt/hgfs solas al activar
-      # una carpeta compartida: un montaje propio chocaría con el suyo.
+      # una carpeta compartida: un montaje propio chocaría con el suyo. Recién
+      # instaladas tardan unos segundos en hacerlo, así que se les da margen.
+      local i
+      for i in {1..20}; do
+        findmnt -n -t fuse.vmhgfs-fuse /mnt/hgfs >/dev/null && break
+        sleep 0.5
+      done
       if grep -q '^vmhgfs-fuse /mnt/hgfs ' /etc/fstab && mountpoint -q /mnt/hgfs; then
         step "Quitando el montaje de kubu (lo hace VMware)" bash -c \
           "sudo sed -i '\#^vmhgfs-fuse /mnt/hgfs #d' /etc/fstab && sudo systemctl daemon-reload"
