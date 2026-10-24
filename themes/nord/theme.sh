@@ -1,0 +1,6 @@
+THEME_NAME="Nord"
+THEME_GHOSTTY="Nord"
+THEME_VSCODE_EXT="arcticicestudio.nord-visual-studio-code"
+THEME_VSCODE_NAME="Nord"
+THEME_KDE_SCHEME="BreezeDark"
+THEME_KDE_ACCENT="#88c0d0"
