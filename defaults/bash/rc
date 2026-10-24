@@ -1,0 +1,6 @@
+# Cargado desde ~/.bashrc. No lo edites: tus cambios van en ~/.bashrc
+KUBU_PATH="${KUBU_PATH:-$HOME/.local/share/kubu}"
+for f in shell aliases functions prompt init; do
+  [[ -f $KUBU_PATH/defaults/bash/$f ]] && source "$KUBU_PATH/defaults/bash/$f"
+done
+unset f
