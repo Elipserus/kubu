@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# Abre la app de un atajo de kubu: kubu-launch terminal|browser|editor
+# Terminal y navegador son siempre los predeterminados del momento en KDE.
+case ${1:-} in
+  terminal) app=$(kreadconfig6 --file kdeglobals --group General --key TerminalService \
+              --default org.kde.konsole.desktop) ;;
+  browser)  app=$(xdg-settings get default-web-browser) ;;
+  editor)   for app in com.microsoft.VSCode.desktop code.desktop; do
+              [[ -n $(find "$HOME/.local/share/applications" /var/lib/flatpak/exports/share/applications \
+                   /usr/share/applications -maxdepth 1 -name "$app" 2>/dev/null) ]] && break
+            done ;;
+  *)        echo "Uso: kubu-launch terminal|browser|editor" >&2; exit 1 ;;
+esac
+exec kstart --application "${app%.desktop}"
