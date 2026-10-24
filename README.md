@@ -33,7 +33,7 @@ todo de una vez. Después, abre el menú con `kubu`.
   pública), Spotify (canción y controles) y uso de CPU/RAM; fecha en el
   escritorio; modo oscuro o claro; elegir las apps ancladas en la barra de
   tareas; quitar el brillo de la ventana activa. Las ventanas gelatinosas de
-  Kubuntu vienen desactivadas.
+  Kubuntu vienen desactivadas y KRunner (Alt+Espacio) sale centrado.
 - **Actualizar**: kubu (git pull + migraciones), el sistema o apps de fuera de apt.
 
 También por comandos: `kubu list`, `kubu install brave vlc`, `kubu uninstall vlc`,
