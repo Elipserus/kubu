@@ -88,6 +88,13 @@ Crea `modules/<id>.sh`. Para un paquete de apt basta con:
 
 Mira `modules/_template.sh` para el resto de opciones.
 
+## Drivers
+
+Si tu equipo necesita drivers privativos (sobre todo gráficas NVIDIA), el
+asistente ofrece **Drivers**, marcado por defecto: instala los que recomienda
+Ubuntu (los mismos de «Controladores adicionales»). Con gráficas Intel o AMD, o
+en una máquina virtual, no aparece porque no hace falta.
+
 ## Máquinas virtuales
 
 Si kubu detecta que corre en una VM (KVM/QEMU, VirtualBox, VMware o Hyper-V),
