@@ -1,0 +1,18 @@
+{
+  "KPlugin": {
+    "Id": "org.kubu.ip",
+    "Name": "kubu IP",
+    "Description": "IP local (clic: IP pública)",
+    "Icon": "network-wired",
+    "Authors": [
+      {
+        "Name": "kubu"
+      }
+    ],
+    "License": "MIT",
+    "Version": "1.0",
+    "Category": "System Information"
+  },
+  "KPackageStructure": "Plasma/Applet",
+  "X-Plasma-API-Minimum-Version": "6.0"
+}
