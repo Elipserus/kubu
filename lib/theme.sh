@@ -73,10 +73,22 @@ theme_apply() {
     cp "$wp" "$HOME/.local/share/wallpapers/kubu/$id.${wp##*.}"
     QT_QPA_PLATFORM=offscreen plasma-apply-wallpaperimage "$HOME/.local/share/wallpapers/kubu/$id.${wp##*.}" >>"$KUBU_LOG" 2>&1 &&
       ok "Fondo de escritorio" || warn "No se pudo cambiar el fondo (¿sesión gráfica abierta?)"
+    lockscreen_wallpaper "$HOME/.local/share/wallpapers/kubu/$id.${wp##*.}"
   fi
 
   echo "$id" >"$KUBU_STATE/theme"
   ok "Tema $THEME_NAME aplicado"
+}
+
+# Mismo fondo en la pantalla de bloqueo que en el escritorio
+lockscreen_wallpaper() {
+  has kwriteconfig6 || return 0
+  kwriteconfig6 --file kscreenlockerrc --group Greeter --key WallpaperPlugin org.kde.image
+  kwriteconfig6 --file kscreenlockerrc --group Greeter --group Wallpaper --group org.kde.image \
+    --group General --key Image "file://$1"
+  kwriteconfig6 --file kscreenlockerrc --group Greeter --group Wallpaper --group org.kde.image \
+    --group General --key PreviewImage "file://$1"
+  ok "Fondo de la pantalla de bloqueo"
 }
 
 # Modo de KDE que elige el usuario en Escritorio: dark (por defecto) o light
