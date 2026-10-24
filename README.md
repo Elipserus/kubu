@@ -33,7 +33,8 @@ todo de una vez. Después, abre el menú con `kubu`.
   pública), Spotify (canción y controles) y uso de CPU/RAM; fecha en el
   escritorio; modo oscuro o claro; elegir las apps ancladas en la barra de
   tareas; quitar el brillo de la ventana activa. Las ventanas gelatinosas de
-  Kubuntu vienen desactivadas y KRunner (Alt+Espacio) sale centrado.
+  Kubuntu vienen desactivadas; lanzador de apps al estilo Omarchy (fuzzel) con
+  los colores del tema y KRunner centrado.
 - **Actualizar**: kubu (git pull + migraciones), el sistema o apps de fuera de apt.
 
 También por comandos: `kubu list`, `kubu install brave vlc`, `kubu uninstall vlc`,
@@ -50,6 +51,7 @@ El asistente ofrece **Atajos de kubu** (marcado por defecto), que añade a KDE:
 | Meta+C                   | VS Code (si está instalado)  |
 | Meta+Q (y Alt+F4)        | Cerrar la ventana            |
 | Meta+F                   | Pantalla completa            |
+| Alt+Espacio              | Lanzador de apps             |
 
 Si una tecla ya la usaba otro atajo de KDE, se le quita solo esa tecla; al
 desinstalar el módulo todo vuelve a como estaba. La chuleta completa (ventanas,
@@ -65,7 +67,7 @@ escritorios, pestañas...) sale al terminar la instalación, en el menú
 | Ghostty | ctrl+shift+b           | Mostrar / ocultar los bordes |
 | KDE     | Meta+arrastrar         | Mover una ventana sin bordes |
 | KDE     | Meta+AvPág             | Minimizar la ventana         |
-| KDE     | alt+espacio            | Buscar y abrir apps (KRunner)|
+| KDE     | alt+F2                 | KRunner: ficheros, cálculos  |
 | Ghostty | ctrl+shift+,           | Recargar la configuración    |
 | Zellij  | ctrl+g                 | Desbloquear modo normal      |
 | Bash    | ctrl+r                 | Buscar en el historial (fzf) |
