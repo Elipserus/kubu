@@ -28,6 +28,7 @@ mod_configure() {
   _plasma_running || die "Plasma no está en marcha: ejecútalo desde tu sesión gráfica"
   _glow off
   _wobbly off
+  _krunner center
   _install_plasmoids
   _bar_exists && _bar_remove
   _bar_create
@@ -42,6 +43,7 @@ mod_uninstall() {
   fi
   _glow on
   _wobbly on
+  _krunner top
   local p
   for p in "${PLASMOIDS[@]}"; do
     kpackagetool6 -t Plasma/Applet -r "$p" >/dev/null 2>&1 || true
@@ -120,6 +122,17 @@ _clock_create() {
 }
 
 # --- Brillo de la ventana activa (Oxygen: resplandor · Breeze: contorno) ----------
+
+# KRunner (Alt+Espacio) flotante y centrado, al estilo Spotlight, en vez de una
+# tira pegada arriba. «top» vuelve al valor de KDE. Se reinicia para que lo lea.
+_krunner() {  # _krunner center|top
+  if [[ $1 == center ]]; then
+    kwriteconfig6 --file krunnerrc --group General --key FreeFloating true
+  else
+    kwriteconfig6 --file krunnerrc --group General --key FreeFloating --delete
+  fi
+  kquitapp6 krunner >/dev/null 2>&1 || true
+}
 
 # Ventanas gelatinosas (Wobbly Windows): Kubuntu las trae activadas; kubu las quita.
 # «on» borra el ajuste y vuelve al valor de Kubuntu.
