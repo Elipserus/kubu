@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Abre una URL como aplicación con el primer navegador Chromium disponible.
+url=${1:?Uso: kubu-webapp <url>}
+
+for b in brave-browser google-chrome google-chrome-stable chromium chromium-browser microsoft-edge; do
+  command -v "$b" >/dev/null && exec "$b" --app="$url"
+done
+for id in com.brave.Browser com.google.Chrome org.chromium.Chromium; do
+  flatpak info "$id" >/dev/null 2>&1 && exec flatpak run "$id" --app="$url"
+done
+exec xdg-open "$url"
