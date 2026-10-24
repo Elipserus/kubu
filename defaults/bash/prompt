@@ -1,0 +1,10 @@
+# Prompt kubu: ruta en azul, rama git en naranja, flecha naranja
+force_color_prompt=yes
+color_prompt=yes
+
+[[ -f /usr/lib/git-core/git-sh-prompt ]] && source /usr/lib/git-core/git-sh-prompt
+GIT_PS1_SHOWDIRTYSTATE=1
+
+__kubu_git() { declare -F __git_ps1 >/dev/null && __git_ps1 " %s"; }
+
+PS1='\[\e]0;\w\a\]\[\e[38;5;33m\]\w\[\e[38;5;208m\]$(__kubu_git)\[\e[0m\]\n\[\e[38;5;208m\]❯\[\e[0m\] '
