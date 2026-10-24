@@ -1,0 +1,37 @@
+# Configuración de Ghostty gestionada por kubu.
+# Tema y fuente se cambian desde `kubu` (Tema / Fuente).
+config-file = ?kubu-theme
+config-file = ?kubu-font
+
+window-padding-x = 14
+window-padding-y = 14
+window-padding-balance = true
+window-inherit-working-directory = true
+background-opacity = 0.97
+
+# Sin barra de título ni bordes; las pestañas toman los colores del tema.
+# Mover: Meta+arrastrar · Maximizar: Meta+RePág · Bordes de vuelta: ctrl+shift+b
+window-decoration = none
+window-theme = ghostty
+resize-overlay = never
+
+cursor-style = block
+cursor-style-blink = false
+shell-integration-features = no-cursor
+
+mouse-hide-while-typing = true
+copy-on-select = clipboard
+confirm-close-surface = false
+scrollback-limit = 100000000
+
+# Atajos
+keybind = ctrl+shift+t=new_tab
+keybind = ctrl+shift+e=new_split:down
+keybind = ctrl+shift+o=new_split:right
+keybind = ctrl+shift+w=close_surface
+keybind = ctrl+shift+enter=toggle_split_zoom
+keybind = ctrl+shift+b=toggle_window_decorations
+keybind = alt+left=goto_split:left
+keybind = alt+right=goto_split:right
+keybind = alt+up=goto_split:up
+keybind = alt+down=goto_split:down
