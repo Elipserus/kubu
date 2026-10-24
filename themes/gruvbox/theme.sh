@@ -1,0 +1,6 @@
+THEME_NAME="Gruvbox"
+THEME_GHOSTTY="Gruvbox Dark"
+THEME_VSCODE_EXT="jdinhlife.gruvbox"
+THEME_VSCODE_NAME="Gruvbox Dark Medium"
+THEME_KDE_SCHEME="BreezeDark"
+THEME_KDE_ACCENT="#d79921"
