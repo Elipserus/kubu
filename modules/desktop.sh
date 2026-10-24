@@ -20,6 +20,7 @@ mod_is_installed() { [[ -f $KUBU_STATE/desktop ]]; }
 
 mod_install() {
   pkg_installed playerctl || step "Instalando playerctl" apt_install playerctl
+  pkg_installed fuzzel || step "Instalando fuzzel (lanzador de apps)" apt_install fuzzel
   mod_configure
   touch "$KUBU_STATE/desktop"
 }
@@ -29,6 +30,7 @@ mod_configure() {
   _glow off
   _wobbly off
   _krunner center
+  _launcher_config
   _install_plasmoids
   _bar_exists && _bar_remove
   _bar_create
@@ -44,6 +46,8 @@ mod_uninstall() {
   _glow on
   _wobbly on
   _krunner top
+  restore "$HOME/.config/fuzzel"
+  pkg_installed fuzzel && step "Eliminando fuzzel" apt_purge fuzzel
   local p
   for p in "${PLASMOIDS[@]}"; do
     kpackagetool6 -t Plasma/Applet -r "$p" >/dev/null 2>&1 || true
@@ -122,6 +126,16 @@ _clock_create() {
 }
 
 # --- Brillo de la ventana activa (Oxygen: resplandor · Breeze: contorno) ----------
+
+# Lanzador de apps (fuzzel) al estilo Omarchy; Atajos de kubu lo pone en Alt+Espacio.
+# Los colores los escribe el tema (theme_launcher en lib/theme.sh).
+_launcher_config() {
+  backup "$HOME/.config/fuzzel"
+  mkdir -p "$HOME/.config/fuzzel"
+  cp "$KUBU_ROOT/configs/fuzzel.ini" "$HOME/.config/fuzzel/fuzzel.ini"
+  source "$KUBU_ROOT/lib/theme.sh"
+  theme_launcher
+}
 
 # KRunner (Alt+Espacio) flotante y centrado, al estilo Spotlight, en vez de una
 # tira pegada arriba. «top» vuelve al valor de KDE. Se reinicia para que lo lea.
