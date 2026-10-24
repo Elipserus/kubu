@@ -1,0 +1,239 @@
+#!/usr/bin/env bash
+# kubu — menú principal y CLI.
+#
+#   kubu                          menú interactivo
+#   kubu list                     módulos y su estado
+#   kubu install   <id>...        instala módulos
+#   kubu uninstall <id>...        desinstala módulos
+#   kubu configure <id>...        (re)configura módulos
+#   kubu update    [<id>...]      actualiza kubu (sin ids) o módulos
+#   kubu theme     [<tema>]       aplica un tema (sin tema: lista)
+#   kubu font      [<fuente>]     cambia la fuente (sin fuente: lista)
+#   kubu atajos                   chuleta de atajos de teclado
+set -Eeuo pipefail
+
+KUBU_ROOT="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/.." && pwd)"
+export KUBU_ROOT
+source "$KUBU_ROOT/lib/common.sh"
+source "$KUBU_ROOT/lib/ui.sh"
+source "$KUBU_ROOT/lib/modules.sh"
+source "$KUBU_ROOT/lib/theme.sh"
+source "$KUBU_ROOT/lib/font.sh"
+source "$KUBU_ROOT/lib/shortcuts.sh"
+
+has gum || { echo "Falta gum. Ejecuta primero install.sh" >&2; exit 1; }
+
+cmd_list() {
+  local id name cat desc i u c up inst req def prio mark
+  while IFS=$'\t' read -r id name cat desc i u c up inst req def prio; do
+    if [[ $inst == 1 ]]; then mark=$(gum style --foreground $KUBU_BLUE '●'); else mark=$(gum style --faint '○'); fi
+    echo "  $mark $(pad "$id" 14) $(pad "[$cat]" 16) $desc"
+  done < <(modules_info)
+}
+
+# --- Aplicaciones -------------------------------------------------------------
+
+# Lista única con casillas: lo instalado aparece marcado.
+# Marcar = instalar, desmarcar = desinstalar.
+# menu_apps <info> [categoría]   (sin categoría = todas)
+menu_apps() {
+  local info=$1 filter=${2:-} id name cat desc i u c up inst req def prio label rc=0 picked_raw
+  local -A ids=() installed=() can_uninstall=() wanted=()
+  local -a labels=() preselected=() picked=() to_install=() to_remove=() locked=() sel_args=()
+
+  while IFS=$'\t' read -r id name cat desc i u c up inst req def prio; do
+    [[ $i == 1 || $inst == 1 ]] || continue
+    [[ -z $filter || $cat == "$filter" ]] || continue
+    # gum separa --selected por comas, así que no pueden aparecer en la etiqueta
+    label="$(pad "$name" 16) $(pad "$cat" 15) ${desc//,/}"
+    ids[$label]=$id
+    labels+=("$label")
+    [[ $inst == 1 ]] && { installed[$id]=1; preselected+=("$label"); }
+    [[ $u == 1 ]] && can_uninstall[$id]=1
+  done <<<"$info"
+
+  ((${#preselected[@]})) && sel_args=(--selected "$(IFS=,; echo "${preselected[*]}")")
+  picked_raw=$(gum choose --no-limit --height 25 \
+    --header "Marca lo que quieres tener (x marca/desmarca, enter aplica, esc cancela)" \
+    "${sel_args[@]}" "${labels[@]}") || rc=$?
+  ((rc == 0)) || return 0   # esc / ctrl+c: no tocar nada
+
+  [[ -n $picked_raw ]] && mapfile -t picked <<<"$picked_raw"
+  for label in "${picked[@]}"; do wanted[${ids[$label]}]=1; done
+
+  for label in "${labels[@]}"; do
+    id=${ids[$label]}
+    if [[ -n ${wanted[$id]:-} && -z ${installed[$id]:-} ]]; then
+      to_install+=("$id")
+    elif [[ -z ${wanted[$id]:-} && -n ${installed[$id]:-} ]]; then
+      if [[ -n ${can_uninstall[$id]:-} ]]; then to_remove+=("$id"); else locked+=("$id"); fi
+    fi
+  done
+
+  echo
+  ((${#to_install[@]})) && echo "  $(gum style --foreground $KUBU_BLUE '+ Instalar:')    ${to_install[*]}"
+  ((${#to_remove[@]}))  && echo "  $(gum style --foreground $KUBU_ORANGE -- '- Desinstalar:') ${to_remove[*]}"
+  ((${#locked[@]}))     && warn "No se pueden desinstalar desde kubu: ${locked[*]}"
+  if ((${#to_install[@]} + ${#to_remove[@]} == 0)); then
+    info "No hay cambios."
+    ui_pause
+    return 0
+  fi
+  echo
+
+  ui_confirm "¿Aplicar estos cambios?" || return 0
+  ((${#to_remove[@]}))  && { apply uninstall "${to_remove[@]}" || true; }
+  if ((${#to_install[@]})); then
+    mapfile -t to_install < <(sort_by_priority "${to_install[@]}")
+    apply install "${to_install[@]}" || true
+  fi
+  ui_pause
+  return 0
+}
+
+# Elige categoría y abre su lista; vuelve aquí hasta pulsar esc o "<< Volver"
+menu_categories() {
+  local info choice cat i inst
+  local -A total=() done_=()
+  local -a cats=() options=()
+  while true; do
+    info=$(modules_info)
+    total=() done_=() cats=() options=("Todas")
+    while IFS=$'\t' read -r _ _ cat _ i _ _ _ inst _; do
+      [[ $i == 1 || $inst == 1 ]] || continue
+      [[ -n ${total[$cat]:-} ]] || cats+=("$cat")
+      total[$cat]=$(( ${total[$cat]:-0} + 1 ))
+      done_[$cat]=$(( ${done_[$cat]:-0} + inst ))
+    done <<<"$info"
+    for cat in "${cats[@]}"; do
+      options+=("$(pad "$cat" 16) ${done_[$cat]}/${total[$cat]}")
+    done
+    options+=("<< Volver")
+
+    ui_header
+    choice=$(ui_choose "Categorías (instaladas/total)" "${options[@]}") || return 0
+    case $choice in
+      "<< Volver") return 0 ;;
+      Todas)       menu_apps "$info" ;;
+      *)           menu_apps "$info" "$(awk '{$NF=""; sub(/ +$/,""); print}' <<<"$choice")" ;;
+    esac
+  done
+}
+
+# --- Configurar / Actualizar -----------------------------------------------------
+
+# menu_pick <acción> <cabecera>: elige un módulo que soporte la acción y la
+# ejecuta; vuelve a la lista hasta pulsar esc o "<< Volver"
+menu_pick() {
+  local action=$1 header=$2 id name cat desc i u c up inst req def prio label choice
+  local -A ids=() has_menu=()
+  local -a labels=()
+  while IFS=$'\t' read -r id name cat desc i u c up inst req def prio; do
+    [[ $inst == 1 ]] || continue
+    [[ $c == 2 ]] && has_menu[$id]=1
+    case $action in
+      configure) [[ $c != 0 ]] || continue ;;
+      update)    [[ $up == 1 ]] || continue ;;
+    esac
+    label="$(pad "$name" 16) $(pad "$cat" 15) $desc"
+    ids[$label]=$id
+    labels+=("$label")
+  done < <(modules_info)
+
+  if ((${#labels[@]} == 0)); then
+    info "No hay nada que hacer aquí."
+    ui_pause
+    return 0
+  fi
+  while true; do
+    ui_header
+    choice=$(ui_choose "$header" "${labels[@]}" "<< Volver") || return 0
+    [[ $choice == "<< Volver" ]] && return 0
+    id=${ids[$choice]}
+    if [[ $action == configure && -n ${has_menu[$id]:-} ]]; then
+      sudo_keepalive
+      run_module "$id" configure || true   # submenú propio: ya hace sus pausas
+    else
+      apply "$action" "$id" || true
+      ui_pause
+    fi
+  done
+}
+
+# Actualiza el propio kubu (git pull) y ejecuta las migraciones pendientes
+kubu_self_update() {
+  local m name done_dir="$KUBU_STATE/migrations"
+  mkdir -p "$done_dir"
+  if [[ -d $KUBU_ROOT/.git ]]; then
+    step "Descargando la última versión de kubu" git -C "$KUBU_ROOT" pull --ff-only
+  else
+    warn "$KUBU_ROOT no es un repositorio git: solo se ejecutan migraciones"
+  fi
+  for m in "$KUBU_ROOT"/migrations/*.sh; do
+    [[ -f $m ]] || continue
+    name=$(basename "$m")
+    [[ -f $done_dir/$name ]] && continue
+    # Migraciones anteriores a la instalación no hacen falta
+    if [[ -f $KUBU_STATE/installed_at ]] && (( ${name%.sh} < $(cat "$KUBU_STATE/installed_at") )); then
+      touch "$done_dir/$name"; continue
+    fi
+    step "Migración $name" bash "$m" && touch "$done_dir/$name"
+  done
+  ok "kubu $(cat "$KUBU_ROOT/version") al día"
+}
+
+menu_update() {
+  local choice
+  ui_header
+  choice=$(ui_choose "¿Qué quieres actualizar?" \
+    "kubu         Descarga kubu y aplica migraciones" \
+    "Sistema      apt upgrade + Flatpak" \
+    "Apps         Herramientas instaladas fuera de apt" \
+    "<< Volver") || return 0
+  case $choice in
+    kubu*)    sudo_keepalive; kubu_self_update; ui_pause ;;
+    Sistema*) sudo_keepalive
+              step "Actualizando índices" apt_update
+              step "Actualizando paquetes" sudo DEBIAN_FRONTEND=noninteractive apt-get full-upgrade -y
+              has flatpak && step "Actualizando Flatpak" sudo flatpak update -y --noninteractive
+              ui_pause ;;
+    Apps*)    menu_pick update "Elige qué actualizar" ;;
+  esac
+}
+
+menu_manual() {
+  gum format <"$KUBU_ROOT/README.md" | gum pager
+}
+
+menu_main() {
+  local choice
+  while true; do
+    ui_header
+    choice=$(gum choose --height 10 --header "" \
+      "Tema" "Fuente" "Aplicaciones" "Configurar" "Atajos" "Actualizar" "Manual" "Salir") || exit 0
+    case $choice in
+      Tema)         menu_theme ;;
+      Fuente)       menu_font ;;
+      Aplicaciones) menu_categories ;;
+      Configurar)   menu_pick configure "Elige qué configurar" ;;
+      Atajos)       shortcuts_cheatsheet | ui_view "Atajos (q para salir)" ;;
+      Actualizar)   menu_update ;;
+      Manual)       menu_manual ;;
+      Salir)        exit 0 ;;
+    esac
+  done
+}
+
+case ${1:-} in
+  "")                          menu_main ;;
+  list|ls)                     cmd_list ;;
+  install|uninstall|configure) action=$1; shift; (($#)) || die "Indica al menos un módulo"
+                               [[ $action == install ]] && mapfile -t ids < <(sort_by_priority "$@") || ids=("$@")
+                               apply "$action" "${ids[@]}" ;;
+  update)                      shift; if (($#)); then apply update "$@"; else sudo_keepalive; kubu_self_update; fi ;;
+  theme)                       shift; if (($#)); then theme_apply "$1"; else theme_list; fi ;;
+  font)                        shift; if (($#)); then font_apply "$*"; else font_list; fi ;;
+  atajos|shortcuts)            shortcuts_cheatsheet ;;
+  -h|--help|help)              awk 'NR > 1 && !/^#/ { exit } NR > 1 { sub(/^# ?/, ""); print }' "${BASH_SOURCE[0]}" ;;
+  *)                           die "Comando desconocido: $1 (usa: kubu help)" ;;
+esac
