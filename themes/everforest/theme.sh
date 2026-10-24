@@ -1,0 +1,6 @@
+THEME_NAME="Everforest"
+THEME_GHOSTTY="Everforest Dark Hard"
+THEME_VSCODE_EXT="sainnhe.everforest"
+THEME_VSCODE_NAME="Everforest Dark"
+THEME_KDE_SCHEME="BreezeDark"
+THEME_KDE_ACCENT="#a7c080"
