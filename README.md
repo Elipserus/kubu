@@ -17,7 +17,8 @@ todo de una vez. Después, abre el menú con `kubu`.
 ## El menú
 
 - **Tema**: Kubu, Tokyo Night, Catppuccin, Nord, Everforest, Gruvbox, Kanagawa,
-  Rosé Pine. Cambia Ghostty, btop, zellij, Neovim, VS Code y los colores de KDE.
+  Rosé Pine. Cambia Ghostty, btop, zellij, Neovim, VS Code, los colores de KDE y
+  el fondo (también el de la pantalla de bloqueo).
 - **Fuente**: Ubuntu Mono (por defecto), JetBrains Mono, Cascadia Mono, Fira Mono o Meslo (Nerd Fonts), y
   su tamaño en Ghostty.
 - **Aplicaciones**: por categorías. Marca (x) para instalar, desmarca para
