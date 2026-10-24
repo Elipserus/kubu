@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0 http://www.kde.org/standards/kcfg/1.0/kcfg.xsd">
+  <kcfgfile name=""/>
+  <group name="General">
+    <!-- Fichero de contents/fonts; vacío = fuente del sistema -->
+    <entry name="fontFile" type="String">
+      <default>Michroma-Regular.ttf</default>
+    </entry>
+    <!-- Colores (#aarrggbb); vacío = por defecto: el día sigue el acento del
+         tema y el resto el azul kubu (ui/style.js) -->
+    <entry name="dayColor" type="String"><default></default></entry>
+    <entry name="dateColor" type="String"><default></default></entry>
+    <entry name="separatorColor" type="String"><default></default></entry>
+    <entry name="timeColor" type="String"><default></default></entry>
+  </group>
+</kcfg>
