@@ -1,0 +1,42 @@
+# Comprimir / descomprimir
+compress() { tar -czf "${1%/}.tar.gz" "${1%/}"; }
+alias decompress="tar -xzf"
+
+# yazi: al salir, la terminal se queda en la carpeta donde estabas
+y() {
+  local tmp cwd
+  tmp=$(mktemp -t yazi-cwd.XXXXXX)
+  yazi "$@" --cwd-file="$tmp"
+  IFS= read -r -d '' cwd <"$tmp"
+  [ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+  rm -f -- "$tmp"
+}
+
+# Grabar una ISO en un USB: iso2sd <iso> <dispositivo>
+iso2sd() {
+  if [ $# -ne 2 ]; then
+    echo "Uso: iso2sd <fichero.iso> <dispositivo>"
+    echo "Ejemplo: iso2sd ~/Descargas/kubuntu-26.04-desktop-amd64.iso /dev/sdb"
+    echo -e "\nDiscos disponibles:"
+    lsblk -d -o NAME,SIZE,MODEL | grep -E '^sd[a-z]'
+  else
+    sudo dd bs=4M status=progress oflag=sync if="$1" of="$2"
+    sudo eject "$2"
+  fi
+}
+
+# Crear una web app: web2app <Nombre> <URL> [icono de dashboardicons.com]
+web2app() {
+  if [ "$#" -lt 2 ]; then
+    echo "Uso: web2app <Nombre> <URL> [icono]   (iconos: https://dashboardicons.com)"
+    return 1
+  fi
+  (KUBU_ROOT=$KUBU_PATH; source "$KUBU_PATH/lib/common.sh"
+   webapp_install "$(tr ' A-Z' '-a-z' <<<"$1")" "$1" "$2" "${3:-}") && echo "Web app $1 creada"
+}
+
+web2app-remove() {
+  [ "$#" -eq 1 ] || { echo "Uso: web2app-remove <Nombre>"; return 1; }
+  (KUBU_ROOT=$KUBU_PATH; source "$KUBU_PATH/lib/common.sh"
+   webapp_remove "$(tr ' A-Z' '-a-z' <<<"$1")") && echo "Web app $1 eliminada"
+}
